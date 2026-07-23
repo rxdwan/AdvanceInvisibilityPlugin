@@ -67,30 +67,6 @@ warnings:
 ### Admin Commands
 | Command | Description |
 |---|---|
-```yaml
-advanced-invisibility:
-  price-per-minute: 500.0   # Cost per minute. Set to 0 for free.
-  default-time: 3            # Default duration in minutes if no time is specified.
-  display-type: BOSS_BAR     # Timer UI: NONE | BOSS_BAR | ACTION_BAR
-  disable-mob-detection: true # If true, mobs ignore invisible players.
-
-messages:
-  already-active: "§cYou already have the Advanced Invisibility effect active."
-  not-enough-money: "§cYou don't have enough money. This effect costs $§e{price}§c."
-  activated: "§aAdvanced Invisibility activated for §e{time} minute(s)§a for $§e{price}§a."
-  admin-gave: "§aGave §e{player}§a advance invisibility for §e{time} minute(s)§a."
-  admin-removed: "§aRemoved advance invisibility from §e{player}§a."
-  removed: "§eYour invisibility effect has been removed."
-  no-permission: "§cYou don't have permission to use this command."
-
-warnings:
-  thresholds: [60, 30, 10]   # Seconds remaining when a title warning fires
-  expired-title: "§4Invisibility Lost"  # Title shown when the effect expires
-  subtitle: "§7{time}s remaining"       # Subtitle shown at each warning. {time} = seconds left
-  fade-in: 5    # Ticks to fade in
-  stay: 60      # Ticks to stay on screen
-  fade-out: 10  # Ticks to fade out
-```
 | `/advanceinv <player>` | Give a player the effect for the default duration |
 | `/advanceinv <player> <minutes>` | Give a player the effect for a specific duration |
 | `/advanceinv <player> remove` | Remove the effect from a player immediately |

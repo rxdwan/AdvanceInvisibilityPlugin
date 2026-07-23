@@ -1,6 +1,10 @@
 # Maven build output
 target/
 
+# Local Maven installation
+apache-maven-*/
+maven.zip
+
 # IDE files
 .idea/
 *.iml
