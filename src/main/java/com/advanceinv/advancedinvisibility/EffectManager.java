@@ -147,6 +147,14 @@ public class EffectManager {
         if (player.isOnline()) {
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
             player.sendActionBar("");
+            if (!isDisconnect) {
+                // Send expiry title so the player always knows even with display-type NONE
+                String expiredTitle = plugin.getConfigManager().getWarningExpiredTitle();
+                player.sendTitle(expiredTitle, "",
+                        plugin.getConfigManager().getWarningFadeIn(),
+                        plugin.getConfigManager().getWarningStay(),
+                        plugin.getConfigManager().getWarningFadeOut());
+            }
         }
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -173,6 +181,7 @@ public class EffectManager {
         private final int originalTicks;
         private int timePassed = 0;
         private BossBar bossBar = null;
+        private final Set<Integer> firedThresholds = new HashSet<>();
 
         public EffectTask(Player player, int remainingTicks, int originalTicks) {
             this.player = player;
@@ -232,6 +241,27 @@ public class EffectManager {
                     int minutes = secondsLeft / 60;
                     int seconds = secondsLeft % 60;
                     player.sendActionBar(String.format("§f§l✨ Advanced Invisibility - %02d:%02d ✨", minutes, seconds));
+                }
+            }
+            // --- Milestone title warnings ---
+            int secondsRemaining = currentRemaining / 20;
+            for (int threshold : plugin.getConfigManager().getWarningThresholds()) {
+                if (secondsRemaining == threshold && !firedThresholds.contains(threshold)) {
+                    firedThresholds.add(threshold);
+                    String warningTitle;
+                    if (threshold <= 10) {
+                        warningTitle = "§c§lInvisibility ending!";
+                    } else if (threshold <= 30) {
+                        warningTitle = "§6§lInvisibility fading...";
+                    } else {
+                        warningTitle = "§e§lInvisibility fading...";
+                    }
+                    String sub = plugin.getConfigManager().getWarningSubtitle()
+                            .replace("{time}", String.valueOf(secondsRemaining));
+                    player.sendTitle(warningTitle, sub,
+                            plugin.getConfigManager().getWarningFadeIn(),
+                            plugin.getConfigManager().getWarningStay(),
+                            plugin.getConfigManager().getWarningFadeOut());
                 }
             }
         }

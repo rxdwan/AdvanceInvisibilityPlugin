@@ -14,3 +14,12 @@ messages:
   admin-removed: "§aRemoved advance invisibility from §e{player}§a."
   removed: "§eYour invisibility effect has been removed."
   no-permission: "§cYou don't have permission to use this command."
+
+# Title warning notifications fired at specific remaining-time milestones
+warnings:
+  thresholds: [60, 30, 10]   # Seconds remaining when to fire a warning title
+  expired-title: "§4Invisibility Lost"  # Title shown when effect expires
+  subtitle: "§7{time}s remaining"       # Subtitle shown at each threshold. {time} = seconds left
+  fade-in: 5    # Ticks to fade in
+  stay: 60      # Ticks to stay on screen
+  fade-out: 10  # Ticks to fade out

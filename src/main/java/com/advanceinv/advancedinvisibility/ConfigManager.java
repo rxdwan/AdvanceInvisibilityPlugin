@@ -1,6 +1,7 @@
 package com.advanceinv.advancedinvisibility;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import java.util.List;
 
 public class ConfigManager {
     private final AdvancedInvisibilityPlugin plugin;
@@ -15,6 +16,12 @@ public class ConfigManager {
     private String msgAdminRemoved;
     private String msgRemoved;
     private String msgNoPermission;
+    private List<Integer> warningThresholds;
+    private String warningExpiredTitle;
+    private String warningSubtitle;
+    private int warningFadeIn;
+    private int warningStay;
+    private int warningFadeOut;
 
     public ConfigManager(AdvancedInvisibilityPlugin plugin) {
         this.plugin = plugin;
@@ -38,6 +45,14 @@ public class ConfigManager {
         this.msgAdminRemoved = config.getString("messages.admin-removed", "§aRemoved advance invisibility from §e{player}§a.");
         this.msgRemoved = config.getString("messages.removed", "§eYour invisibility effect has been removed.");
         this.msgNoPermission = config.getString("messages.no-permission", "§cYou don't have permission to use this command.");
+
+        this.warningThresholds = config.getIntegerList("warnings.thresholds");
+        if (this.warningThresholds.isEmpty()) this.warningThresholds = List.of(60, 30, 10);
+        this.warningExpiredTitle = config.getString("warnings.expired-title", "§4Invisibility Lost");
+        this.warningSubtitle = config.getString("warnings.subtitle", "§7{time}s remaining");
+        this.warningFadeIn = config.getInt("warnings.fade-in", 5);
+        this.warningStay = config.getInt("warnings.stay", 60);
+        this.warningFadeOut = config.getInt("warnings.fade-out", 10);
     }
 
     public double getPricePerMinute() { return pricePerMinute; }
@@ -51,4 +66,10 @@ public class ConfigManager {
     public String getMsgAdminRemoved() { return msgAdminRemoved; }
     public String getMsgRemoved() { return msgRemoved; }
     public String getMsgNoPermission() { return msgNoPermission; }
+    public List<Integer> getWarningThresholds() { return warningThresholds; }
+    public String getWarningExpiredTitle() { return warningExpiredTitle; }
+    public String getWarningSubtitle() { return warningSubtitle; }
+    public int getWarningFadeIn() { return warningFadeIn; }
+    public int getWarningStay() { return warningStay; }
+    public int getWarningFadeOut() { return warningFadeOut; }
 }
