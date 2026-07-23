@@ -65,7 +65,7 @@ Requires Java 17+ and Maven (or `mvnd` for faster builds).
 
 ```bash
 git clone https://github.com/rxdwan/AdvanceInvisibilityPlugin.git
-cd advanced-invisibility
+cd AdvanceInvisibilityPlugin
 mvnd clean package
 ```
 
