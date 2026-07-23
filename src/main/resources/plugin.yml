@@ -1,0 +1,17 @@
+name: AdvancedInvisibility
+version: 1.0.0
+main: com.advanceinv.advancedinvisibility.AdvancedInvisibilityPlugin
+api-version: '1.21'
+depend: [Vault, ProtocolLib]
+softdepend: [LuckPerms]
+
+commands:
+  advanceinv:
+    description: Purchase and activate Advanced Invisibility
+    usage: /advanceinv
+    permission: advancedinvisibility.use
+
+permissions:
+  advancedinvisibility.use:
+    description: Allows use of /advanceinv
+    default: op

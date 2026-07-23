@@ -1,0 +1,16 @@
+# AdvancedInvisibility Configuration
+
+advanced-invisibility:
+  price-per-minute: 500.0 # Cost per minute of invisibility
+  default-time: 3         # Default duration in minutes
+  display-type: BOSS_BAR  # Options: NONE, BOSS_BAR, ACTION_BAR
+  disable-mob-detection: true # Mobs ignore invisible players
+
+messages:
+  already-active: "§cYou already have the Advanced Invisibility effect active."
+  not-enough-money: "§cYou don't have enough money. This effect costs $§e{price}§c."
+  activated: "§aAdvanced Invisibility activated for §e{time} minute(s)§a for $§e{price}§a."
+  admin-gave: "§aGave §e{player}§a advance invisibility for §e{time} minute(s)§a."
+  admin-removed: "§aRemoved advance invisibility from §e{player}§a."
+  removed: "§eYour invisibility effect has been removed."
+  no-permission: "§cYou don't have permission to use this command."
