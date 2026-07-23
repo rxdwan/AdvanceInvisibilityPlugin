@@ -64,7 +64,7 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 Requires Java 17+ and Maven (or `mvnd` for faster builds).
 
 ```bash
-git clone https://github.com/your-username/advanced-invisibility.git
+git clone https://github.com/rxdwan/AdvanceInvisibilityPlugin.git
 cd advanced-invisibility
 mvnd clean package
 ```
