@@ -87,6 +87,29 @@ warnings:
 4. Drinking an **Awkward Potion** — stealth is fully restored. Every mob that ever aggroed the player has their target dropped, regardless of distance.
 5. Effect expires, player dies, or drinks milk — full cleanup.
 
+## Screenshots
+
+### Display Types
+
+<table>
+  <tr>
+    <td><img src="screenshots/boss_bar.png"><br>Boss Bar</td>
+    <td><img src="screenshots/action_bar.png"><br>Acion Bar</td>
+    <td><img src="screenshots/warning-message-60s.png"><br>Warning message (for "NONE" display type)</td>
+  </tr>
+</table>
+
+### Invisibility player POVs
+
+<table>
+  <tr>
+    <td><img src="screenshots/invisible-player pov.png"><br>POV of player having Advance Invisibility (third person camera)</td>
+    <td><img src="screenshots/john pov.png"><br>POV of other players</td>
+  </tr>
+</table>
+
+> *Note: You can see your own armout and totems but others players wont be. Similarly you can hear sounds you generate, others wont be able to hear them.*
+
 ## Building from Source
 
 Requires Java 17+ and Maven (or `mvnd` for faster builds).
