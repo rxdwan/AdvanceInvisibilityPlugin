@@ -1,5 +1,10 @@
 # Advanced Invisibility
 
+<div align="center">
+  <img src="banner.png" width="80%">
+</div>
+
+---
 
 A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, server-side invisibility — far beyond the vanilla Invisibility potion. Built with ProtocolLib for deep packet-level control.
 
