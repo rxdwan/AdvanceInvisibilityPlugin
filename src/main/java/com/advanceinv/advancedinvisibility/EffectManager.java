@@ -164,12 +164,15 @@ public class EffectManager {
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
             player.sendActionBar("");
             if (!isDisconnect) {
-                // Send expiry title so the player always knows even with display-type NONE
-                String expiredTitle = plugin.getConfigManager().getWarningExpiredTitle();
-                player.sendTitle(expiredTitle, "",
-                        plugin.getConfigManager().getWarningFadeIn(),
-                        plugin.getConfigManager().getWarningStay(),
-                        plugin.getConfigManager().getWarningFadeOut());
+                String displayType = plugin.getConfigManager().getDisplayType();
+                if ("NONE".equals(displayType) || plugin.getConfigManager().isShowExpiredTitle()) {
+                    // Send expiry title so the player always knows even with display-type NONE
+                    String expiredTitle = plugin.getConfigManager().getWarningExpiredTitle();
+                    player.sendTitle(expiredTitle, "",
+                            plugin.getConfigManager().getWarningFadeIn(),
+                            plugin.getConfigManager().getWarningStay(),
+                            plugin.getConfigManager().getWarningFadeOut());
+                }
             }
         }
 

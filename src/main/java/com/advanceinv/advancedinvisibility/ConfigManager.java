@@ -17,6 +17,7 @@ public class ConfigManager {
     private String msgRemoved;
     private String msgNoPermission;
     private List<Integer> warningThresholds;
+    private boolean showExpiredTitle;
     private String warningExpiredTitle;
     private String warningSubtitle;
     private int warningFadeIn;
@@ -57,6 +58,7 @@ public class ConfigManager {
 
         this.warningThresholds = config.getIntegerList("warnings.thresholds");
         if (this.warningThresholds.isEmpty()) this.warningThresholds = List.of(60, 30, 10);
+        this.showExpiredTitle = config.getBoolean("warnings.show-expired-title", false);
         this.warningExpiredTitle = config.getString("warnings.expired-title", "§4Invisibility Lost");
         this.warningSubtitle = config.getString("warnings.subtitle", "§7{time}s remaining");
         this.warningFadeIn = config.getInt("warnings.fade-in", 5);
@@ -76,6 +78,7 @@ public class ConfigManager {
     public String getMsgRemoved() { return msgRemoved; }
     public String getMsgNoPermission() { return msgNoPermission; }
     public List<Integer> getWarningThresholds() { return warningThresholds; }
+    public boolean isShowExpiredTitle() { return showExpiredTitle; }
     public String getWarningExpiredTitle() { return warningExpiredTitle; }
     public String getWarningSubtitle() { return warningSubtitle; }
     public int getWarningFadeIn() { return warningFadeIn; }

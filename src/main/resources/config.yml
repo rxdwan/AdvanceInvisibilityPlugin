@@ -24,6 +24,7 @@ messages:
 # Title warning notifications fired at specific remaining-time milestones
 warnings:
   thresholds: [60, 30, 10]   # Seconds remaining when to fire a warning title
+  show-expired-title: false  # If true, shows expiry title for BOSS_BAR/ACTION_BAR display types
   expired-title: "§4Invisibility Lost"  # Title shown when effect expires
   subtitle: "§7{time}s remaining"       # Subtitle shown at each threshold. {time} = seconds left
   fade-in: 8    # Ticks to fade in
