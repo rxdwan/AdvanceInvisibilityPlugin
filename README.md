@@ -108,7 +108,7 @@ warnings:
   </tr>
 </table>
 
-> *Note: You can see your own armout and totems but others players wont be. Similarly you can hear sounds you generate, others wont be able to hear them.*
+> *Note: You can see your own armout and holding items but others players wont be. Similarly you can hear sounds you generate, others wont be able to hear them.*
 
 ## Building from Source
 

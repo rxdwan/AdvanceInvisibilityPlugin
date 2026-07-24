@@ -26,6 +26,6 @@ warnings:
   thresholds: [60, 30, 10]   # Seconds remaining when to fire a warning title
   expired-title: "§4Invisibility Lost"  # Title shown when effect expires
   subtitle: "§7{time}s remaining"       # Subtitle shown at each threshold. {time} = seconds left
-  fade-in: 5    # Ticks to fade in
-  stay: 60      # Ticks to stay on screen
-  fade-out: 10  # Ticks to fade out
+  fade-in: 8    # Ticks to fade in
+  stay: 40      # Ticks to stay on screen
+  fade-out: 8  # Ticks to fade out
