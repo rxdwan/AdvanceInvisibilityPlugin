@@ -61,9 +61,20 @@ public class EffectManager {
         // Clear aggro from EVERY mob that has EVER targeted this player
         // Using Bukkit.getEntity(UUID) — direct O(1) lookup, no world scan needed
         Set<UUID> mobsToUntrack = aggroedMobs.remove(player.getUniqueId());
-        if (mobsToUntrack != null && plugin.getConfigManager().isDisableMobDetection()) {
-            for (UUID mobUuid : mobsToUntrack) {
-                org.bukkit.entity.Entity entity = Bukkit.getEntity(mobUuid);
+        if (plugin.getConfigManager().isDisableMobDetection()) {
+            if (mobsToUntrack != null) {
+                for (UUID mobUuid : mobsToUntrack) {
+                    org.bukkit.entity.Entity entity = Bukkit.getEntity(mobUuid);
+                    if (entity instanceof org.bukkit.entity.Mob) {
+                        org.bukkit.entity.Mob mob = (org.bukkit.entity.Mob) entity;
+                        if (mob.getTarget() != null && mob.getTarget().equals(player)) {
+                            mob.setTarget(null);
+                        }
+                    }
+                }
+            }
+            // Also drop existing aggro from nearby mobs (catches mobs that aggroed before the effect/tracking started)
+            for (org.bukkit.entity.Entity entity : player.getNearbyEntities(64, 64, 64)) {
                 if (entity instanceof org.bukkit.entity.Mob) {
                     org.bukkit.entity.Mob mob = (org.bukkit.entity.Mob) entity;
                     if (mob.getTarget() != null && mob.getTarget().equals(player)) {
@@ -83,7 +94,12 @@ public class EffectManager {
     }
 
     public void applyEffect(Player player, int durationTicks) {
-        applyEffect(player, durationTicks, durationTicks);
+        // Drop any existing aggro immediately upon buying the effect
+        restoreStealth(player);
+
+        int originalTicks = durationTicks;
+        int remainingTicks = durationTicks;
+        applyEffect(player, remainingTicks, originalTicks);
     }
 
     public void applyEffect(Player player, int remainingTicks, int originalTicks) {
@@ -217,9 +233,20 @@ public class EffectManager {
 
             // Handle dynamic creation/destruction of BossBar based on config
             if ("BOSS_BAR".equals(displayType)) {
+                BarColor color;
+                try { color = BarColor.valueOf(plugin.getConfigManager().getBossBarColor()); }
+                catch (IllegalArgumentException e) { color = BarColor.WHITE; }
+                
+                BarStyle style;
+                try { style = BarStyle.valueOf(plugin.getConfigManager().getBossBarStyle()); }
+                catch (IllegalArgumentException e) { style = BarStyle.SOLID; }
+
                 if (bossBar == null) {
-                    bossBar = Bukkit.createBossBar("§f§lAdvanced Invisibility", BarColor.WHITE, BarStyle.SOLID);
+                    bossBar = Bukkit.createBossBar("", color, style);
                     bossBar.addPlayer(player);
+                } else {
+                    bossBar.setColor(color);
+                    bossBar.setStyle(style);
                 }
                 
                 double progress = (double) Math.max(0, currentRemaining) / originalTicks;
@@ -228,7 +255,9 @@ public class EffectManager {
                 int secondsLeft = currentRemaining / 20;
                 int minutes = secondsLeft / 60;
                 int seconds = secondsLeft % 60;
-                bossBar.setTitle(String.format("§f§lAdvanced Invisibility §7- %02d:%02d", minutes, seconds));
+                String timeStr = String.format("%02d:%02d", minutes, seconds);
+                String title = plugin.getConfigManager().getBossBarText().replace("{time}", timeStr);
+                bossBar.setTitle(title);
             } else {
                 // If it was BOSS_BAR but changed to something else, remove it
                 if (bossBar != null) {
@@ -240,28 +269,32 @@ public class EffectManager {
                     int secondsLeft = currentRemaining / 20;
                     int minutes = secondsLeft / 60;
                     int seconds = secondsLeft % 60;
-                    player.sendActionBar(String.format("§f§l✨ Advanced Invisibility - %02d:%02d ✨", minutes, seconds));
+                    String timeStr = String.format("%02d:%02d", minutes, seconds);
+                    String actionText = plugin.getConfigManager().getActionBarText().replace("{time}", timeStr);
+                    player.sendActionBar(actionText);
                 }
             }
-            // --- Milestone title warnings ---
-            int secondsRemaining = currentRemaining / 20;
-            for (int threshold : plugin.getConfigManager().getWarningThresholds()) {
-                if (secondsRemaining == threshold && !firedThresholds.contains(threshold)) {
-                    firedThresholds.add(threshold);
-                    String warningTitle;
-                    if (threshold <= 10) {
-                        warningTitle = "§c§lInvisibility ending!";
-                    } else if (threshold <= 30) {
-                        warningTitle = "§6§lInvisibility fading...";
-                    } else {
-                        warningTitle = "§e§lInvisibility fading...";
+            // --- Milestone title warnings (ONLY for NONE display type) ---
+            if ("NONE".equals(displayType)) {
+                int secondsRemaining = currentRemaining / 20;
+                for (int threshold : plugin.getConfigManager().getWarningThresholds()) {
+                    if (secondsRemaining == threshold && !firedThresholds.contains(threshold)) {
+                        firedThresholds.add(threshold);
+                        String warningTitle;
+                        if (threshold <= 10) {
+                            warningTitle = "§c§lInvisibility ending!";
+                        } else if (threshold <= 30) {
+                            warningTitle = "§6§lInvisibility fading...";
+                        } else {
+                            warningTitle = "§e§lInvisibility fading...";
+                        }
+                        String sub = plugin.getConfigManager().getWarningSubtitle()
+                                .replace("{time}", String.valueOf(secondsRemaining));
+                        player.sendTitle(warningTitle, sub,
+                                plugin.getConfigManager().getWarningFadeIn(),
+                                plugin.getConfigManager().getWarningStay(),
+                                plugin.getConfigManager().getWarningFadeOut());
                     }
-                    String sub = plugin.getConfigManager().getWarningSubtitle()
-                            .replace("{time}", String.valueOf(secondsRemaining));
-                    player.sendTitle(warningTitle, sub,
-                            plugin.getConfigManager().getWarningFadeIn(),
-                            plugin.getConfigManager().getWarningStay(),
-                            plugin.getConfigManager().getWarningFadeOut());
                 }
             }
         }

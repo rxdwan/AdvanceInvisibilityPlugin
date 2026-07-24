@@ -22,6 +22,10 @@ public class ConfigManager {
     private int warningFadeIn;
     private int warningStay;
     private int warningFadeOut;
+    private String bossBarText;
+    private String bossBarColor;
+    private String bossBarStyle;
+    private String actionBarText;
 
     public ConfigManager(AdvancedInvisibilityPlugin plugin) {
         this.plugin = plugin;
@@ -37,6 +41,11 @@ public class ConfigManager {
         this.defaultTime = config.getInt("advanced-invisibility.default-time", 3);
         this.displayType = config.getString("advanced-invisibility.display-type", "BOSS_BAR").toUpperCase();
         this.disableMobDetection = config.getBoolean("advanced-invisibility.disable-mob-detection", true);
+
+        this.bossBarText = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("display.boss-bar-text", "&f&lAdvanced Invisibility &7- {time}"));
+        this.bossBarColor = config.getString("display.boss-bar-color", "WHITE").toUpperCase();
+        this.bossBarStyle = config.getString("display.boss-bar-style", "SOLID").toUpperCase();
+        this.actionBarText = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("display.action-bar-text", "&f&l✨ Advanced Invisibility - {time} ✨"));
 
         this.msgAlreadyActive = config.getString("messages.already-active", "§cYou already have the Advanced Invisibility effect active.");
         this.msgNotEnoughMoney = config.getString("messages.not-enough-money", "§cYou don't have enough money. This effect costs $§e{price}§c.");
@@ -72,4 +81,8 @@ public class ConfigManager {
     public int getWarningFadeIn() { return warningFadeIn; }
     public int getWarningStay() { return warningStay; }
     public int getWarningFadeOut() { return warningFadeOut; }
+    public String getBossBarText() { return bossBarText; }
+    public String getBossBarColor() { return bossBarColor; }
+    public String getBossBarStyle() { return bossBarStyle; }
+    public String getActionBarText() { return actionBarText; }
 }

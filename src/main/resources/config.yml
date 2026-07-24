@@ -6,6 +6,12 @@ advanced-invisibility:
   display-type: BOSS_BAR  # Options: NONE, BOSS_BAR, ACTION_BAR
   disable-mob-detection: true # Mobs ignore invisible players
 
+display:
+  boss-bar-text: "&f&lAdvanced Invisibility &7- {time}"
+  boss-bar-color: "WHITE" # Options: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW
+  boss-bar-style: "SOLID" # Options: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+  action-bar-text: "&f&l✦ Advanced Invisibility - {time} ✦"
+
 messages:
   already-active: "§cYou already have the Advanced Invisibility effect active."
   not-enough-money: "§cYou don't have enough money. This effect costs $§e{price}§c."
