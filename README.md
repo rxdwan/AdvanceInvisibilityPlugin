@@ -25,7 +25,9 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 | [Paper](https://papermc.io) | 1.21+ | Required |
 | [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) | 5.4.0+ | Required |
 | [Vault](https://www.spigotmc.org/resources/vault.34315/) | 1.7+ | Required |
-| An economy plugin (e.g. EssentialsX) | Any | Required |
+| [EssentialsX](https://modrinth.com/project/hXiIvTyT) | Any | Required |
+
+> *Note: Instead of EssentialsX any economy plugin can be used.* 
 
 ## Installation
 
