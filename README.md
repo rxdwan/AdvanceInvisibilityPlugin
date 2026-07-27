@@ -1,7 +1,7 @@
 # Advanced Invisibility
 
 <div align="center">
-  <img src="banner.png" width="80%">
+  <img src="assets/banner.png" width="80%">
 </div>
 
 ---
@@ -100,9 +100,9 @@ warnings:
 
 <table>
   <tr>
-    <td><img src="screenshots/boss_bar.png"><br>Boss Bar</td>
-    <td><img src="screenshots/action_bar.png"><br>Acion Bar</td>
-    <td><img src="screenshots/warning-message-60s.png"><br>Warning message (for "NONE" display type)</td>
+    <td><img src="assets/screenshots/boss_bar.png"><br>Boss Bar</td>
+    <td><img src="assets/screenshots/action_bar.png"><br>Acion Bar</td>
+    <td><img src="assets/screenshots/warning-message-60s.png"><br>Warning message (for "NONE" display type)</td>
   </tr>
 </table>
 
@@ -110,8 +110,8 @@ warnings:
 
 <table>
   <tr>
-    <td><img src="screenshots/invisible-player pov.png"><br>POV of player having Advance Invisibility (third person camera)</td>
-    <td><img src="screenshots/john pov.png"><br>POV of other players</td>
+    <td><img src="assets/screenshots/invisible-player pov.png"><br>POV of player having Advance Invisibility (third person camera)</td>
+    <td><img src="assets/screenshots/john pov.png"><br>POV of other players</td>
   </tr>
 </table>
 
