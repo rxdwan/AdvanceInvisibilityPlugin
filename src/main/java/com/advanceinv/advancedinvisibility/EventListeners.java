@@ -44,6 +44,15 @@ public class EventListeners implements Listener {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (plugin.getEffectManager().hasEffect(online)) {
                 joiner.hidePlayer(plugin, online);
+                // Re-send PLAYER_INFO so the invisible player stays in joiner's tab list
+                plugin.getEffectManager().sendTabListPacketTo(online, joiner);
+            }
+        }
+        
+        // If an invisible player is currently in reveal window, show them to the joiner
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (plugin.getEffectManager().hasEffect(online) && plugin.getEffectManager().isRevealed(online.getUniqueId())) {
+                joiner.showPlayer(plugin, online);
             }
         }
     }
@@ -102,6 +111,13 @@ public class EventListeners implements Listener {
             Player player = (Player) event.getDamager();
             if (plugin.getEffectManager().hasEffect(player)) {
                 plugin.getEffectManager().setStealthBroken(player);
+                
+                if (plugin.getConfigManager().isAttackRevealEnabled()) {
+                    plugin.getEffectManager().enterRevealWindow(player);
+                    // Small subtitle-only text — doesn't clash with action bar timer or milestone titles
+                    int dur = plugin.getConfigManager().getAttackRevealDuration();
+                    player.sendTitle("", "§c· Stealth disrupted for §f" + dur + "s", 2, 50, 10);
+                }
             }
         }
     }

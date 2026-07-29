@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -32,6 +33,9 @@ public class EffectManager {
     private final Map<UUID, EffectTask> activeEffects = new ConcurrentHashMap<>();
     private final Set<UUID> stealthBrokenPlayers = new HashSet<>();
     private final Map<UUID, Set<UUID>> aggroedMobs = new ConcurrentHashMap<>(); // player UUID -> set of mob entity UUIDs
+    
+    private final Set<UUID> revealedPlayers = ConcurrentHashMap.newKeySet();
+    private final Map<UUID, BukkitTask> revealTasks = new ConcurrentHashMap<>();
 
     public EffectManager(AdvancedInvisibilityPlugin plugin) {
         this.plugin = plugin;
@@ -158,6 +162,13 @@ public class EffectManager {
             task.cancel();
         }
         
+        // Cancel any active reveal task
+        BukkitTask revealTask = revealTasks.remove(player.getUniqueId());
+        if (revealTask != null) {
+            revealTask.cancel();
+        }
+        revealedPlayers.remove(player.getUniqueId());
+        
         restoreStealth(player);
 
         if (player.isOnline()) {
@@ -192,6 +203,11 @@ public class EffectManager {
         }
         activeEffects.clear();
         stealthBrokenPlayers.clear();
+        revealedPlayers.clear();
+        for (BukkitTask task : revealTasks.values()) {
+            task.cancel();
+        }
+        revealTasks.clear();
     }
 
     class EffectTask extends BukkitRunnable {
@@ -301,5 +317,117 @@ public class EffectManager {
                 }
             }
         }
+    }
+
+    public boolean isRevealed(UUID uuid) {
+        return revealedPlayers.contains(uuid);
+    }
+
+    /**
+     * Re-sends the PLAYER_INFO packet for an invisible player to a specific receiver,
+     * ensuring they appear in the tab list even though they are entity-hidden.
+     */
+    public void sendTabListPacketTo(Player invisible, Player receiver) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        try {
+            PacketContainer addPacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+            addPacket.getPlayerInfoActions().write(0, EnumSet.of(
+                    EnumWrappers.PlayerInfoAction.ADD_PLAYER,
+                    EnumWrappers.PlayerInfoAction.UPDATE_LISTED
+            ));
+            WrappedGameProfile profile = WrappedGameProfile.fromPlayer(invisible);
+            PlayerInfoData data = new PlayerInfoData(
+                    invisible.getUniqueId(),
+                    invisible.getPing(),
+                    true,
+                    EnumWrappers.NativeGameMode.fromBukkit(invisible.getGameMode()),
+                    profile,
+                    WrappedChatComponent.fromText(invisible.getPlayerListName()),
+                    (WrappedRemoteChatSessionData) null
+            );
+            addPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(data));
+            protocolManager.sendServerPacket(receiver, addPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enterRevealWindow(Player player) {
+        UUID uuid = player.getUniqueId();
+        
+        // Cancel existing task if extending the window
+        BukkitTask existingTask = revealTasks.remove(uuid);
+        if (existingTask != null) {
+            existingTask.cancel();
+        }
+
+        revealedPlayers.add(uuid);
+
+        // Show player to everyone
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!onlinePlayer.equals(player)) {
+                onlinePlayer.showPlayer(plugin, player);
+            }
+        }
+
+        int durationSeconds = plugin.getConfigManager().getAttackRevealDuration();
+        
+        BukkitTask newTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player.isOnline() && hasEffect(player)) {
+                    exitRevealWindow(player);
+                } else {
+                    revealedPlayers.remove(uuid);
+                    revealTasks.remove(uuid);
+                }
+            }
+        }.runTaskLater(plugin, durationSeconds * 20L);
+
+        revealTasks.put(uuid, newTask);
+    }
+
+    public void exitRevealWindow(Player player) {
+        UUID uuid = player.getUniqueId();
+        revealedPlayers.remove(uuid);
+        revealTasks.remove(uuid);
+
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        PacketContainer addPacket = null;
+        try {
+            addPacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+            addPacket.getPlayerInfoActions().write(0, EnumSet.of(
+                    EnumWrappers.PlayerInfoAction.ADD_PLAYER,
+                    EnumWrappers.PlayerInfoAction.UPDATE_LISTED
+            ));
+            WrappedGameProfile profile = WrappedGameProfile.fromPlayer(player);
+            PlayerInfoData data = new PlayerInfoData(
+                    player.getUniqueId(),
+                    player.getPing(),
+                    true,
+                    EnumWrappers.NativeGameMode.fromBukkit(player.getGameMode()),
+                    profile,
+                    WrappedChatComponent.fromText(player.getPlayerListName()),
+                    (WrappedRemoteChatSessionData) null
+            );
+            addPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(data));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Hide player from everyone again, then re-send tab list entry so they stay listed
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!onlinePlayer.equals(player)) {
+                onlinePlayer.hidePlayer(plugin, player);
+                if (addPacket != null) {
+                    try {
+                        protocolManager.sendServerPacket(onlinePlayer, addPacket);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        // Use small subtitle so it doesn't interfere with action bar timer or milestone titles
+        player.sendTitle("", "§a· Stealth restored.", 2, 50, 10);
     }
 }

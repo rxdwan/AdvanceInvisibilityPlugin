@@ -6,6 +6,10 @@ advanced-invisibility:
   display-type: BOSS_BAR  # Options: NONE, BOSS_BAR, ACTION_BAR
   disable-mob-detection: true # Mobs ignore invisible players
 
+  attack-reveal:
+    enabled: true                # Toggle this feature on/off entirely
+    duration: 3                  # Seconds the player remains in vanilla-visible state after attacking
+
 display:
   boss-bar-text: "&f&lAdvanced Invisibility &7- {time}"
   boss-bar-color: "WHITE" # Options: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW

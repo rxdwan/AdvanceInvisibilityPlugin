@@ -117,6 +117,12 @@ warnings:
 
 > *Note: You can see your own armout and holding items but others players wont be. Similarly you can hear sounds you generate, others wont be able to hear them.*
 
+## Downloading
+
+You can download from [Releases](releases/) section of this repository.
+
+**Modrinth**: *Under review...*
+
 ## Building from Source
 
 Requires Java 17+ and Maven (or `mvnd` for faster builds).
@@ -127,7 +133,7 @@ cd AdvanceInvisibilityPlugin
 mvnd clean package
 ```
 
-The compiled JAR will be in `target/AdvancedInvisibility-1.0.0.jar`.
+The compiled JAR will be in `target/AdvancedInvisibility-1.1.0.jar`.
 
 ## License
 

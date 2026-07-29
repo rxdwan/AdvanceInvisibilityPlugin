@@ -43,6 +43,12 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 player.sendMessage(plugin.getConfigManager().getMsgNoPermission());
                 return true;
             }
+            // Restrict to overworld for normal players
+            if (player.getWorld().getEnvironment() != org.bukkit.World.Environment.NORMAL
+                    && !player.hasPermission("advancedinvisibility.admin") && !player.isOp()) {
+                player.sendMessage("§cYou can only use this in the overworld.");
+                return true;
+            }
             if (plugin.getEffectManager().hasEffect(player)) {
                 player.sendMessage(plugin.getConfigManager().getMsgAlreadyActive());
                 return true;

@@ -9,6 +9,8 @@ public class ConfigManager {
     private int defaultTime;
     private String displayType;
     private boolean disableMobDetection;
+    private boolean attackRevealEnabled;
+    private int attackRevealDuration;
     private String msgAlreadyActive;
     private String msgNotEnoughMoney;
     private String msgActivated;
@@ -42,6 +44,8 @@ public class ConfigManager {
         this.defaultTime = config.getInt("advanced-invisibility.default-time", 3);
         this.displayType = config.getString("advanced-invisibility.display-type", "BOSS_BAR").toUpperCase();
         this.disableMobDetection = config.getBoolean("advanced-invisibility.disable-mob-detection", true);
+        this.attackRevealEnabled = config.getBoolean("advanced-invisibility.attack-reveal.enabled", true);
+        this.attackRevealDuration = config.getInt("advanced-invisibility.attack-reveal.duration", 3);
 
         this.bossBarText = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("display.boss-bar-text", "&f&lAdvanced Invisibility &7- {time}"));
         this.bossBarColor = config.getString("display.boss-bar-color", "WHITE").toUpperCase();
@@ -70,6 +74,8 @@ public class ConfigManager {
     public int getDefaultTime() { return defaultTime; }
     public String getDisplayType() { return displayType; }
     public boolean isDisableMobDetection() { return disableMobDetection; }
+    public boolean isAttackRevealEnabled() { return attackRevealEnabled; }
+    public int getAttackRevealDuration() { return attackRevealDuration; }
     public String getMsgAlreadyActive() { return msgAlreadyActive; }
     public String getMsgNotEnoughMoney() { return msgNotEnoughMoney; }
     public String getMsgActivated() { return msgActivated; }
