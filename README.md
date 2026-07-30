@@ -115,7 +115,7 @@ warnings:
   </tr>
 </table>
 
-> *Note: You can see your own armout and holding items but others players wont be. Similarly you can hear sounds you generate, others wont be able to hear them.*
+> *Note: You can see your own armour and holding items but others players wont be able to. Similarly you can hear sounds you generate, others wont be able to hear them.*
 
 ## Downloading
 
