@@ -139,7 +139,7 @@ warnings:
 
 ## Downloading
 
-You can download from [Releases](https://github.com/rxdwan/AdvanceInvisibilityPlugin/releases) section of this repository.
+Download the latest release from the [Releases](https://github.com/rxdwan/AdvanceInvisibilityPlugin/releases) section of this repository.
 
 **Modrinth**: *Under review...*
 
