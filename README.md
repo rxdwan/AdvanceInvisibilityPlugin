@@ -20,9 +20,9 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 - **World Pausing** — Invisibility effect automatically pauses when you change dimensions (e.g. going to the Nether) and resumes when you return to the Overworld.
 - **Configurable Sound Suppression** — Suppresses sounds coming from invisible players, such as hurting, armor equipping, eating, drinking, and burping, with toggles for block placing and water buckets.
 
-## Requirements
+## Dependency
 
-| Dependency | Version | Required? |
+| Plugin | Version | Required? |
 |---|---|---|
 | [Paper](https://papermc.io) | 1.21+ | Required |
 | [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) | 5.4.0+ | Required |
@@ -30,6 +30,8 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 | [EssentialsX](https://modrinth.com/project/hXiIvTyT) | Any | Required |
 
 > *Note: Instead of EssentialsX any economy plugin can be used.* 
+
+![Available for Paper](assets/badges/paper.png) ![Available for Purpur](assets/badges/purpur.png)
 
 ## Installation
 
@@ -54,11 +56,11 @@ advanced-invisibility:
   suppress-sounds:
     hurt: true
     armor-equip: true
-    eating: true
-    drinking: true
-    burp: true
-    block-place: false
-    water-bucket: false
+    consume-sounds: true
+    block-place: true
+    block-break: true        # Breaking blocks (e.g. stone, dirt, wood)
+    block-interact: false    # Container/door sounds (chest, barrel, shulker, doors)
+    totem-use: true
 
 messages:
   already-active: "&cYou already have the Advanced Invisibility effect active."

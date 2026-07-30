@@ -6,9 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-07-30
 ### Added
-- **Configurable Sound Suppression**: Added a `suppress-sounds` block in `config.yml` allowing server admins to toggle specific sound suppressions (hurt, armor-equip, eating, drinking, burp, block-place, water-bucket).
+- **Configurable Sound Suppression**: Added a `suppress-sounds` block in `config.yml` allowing server admins to toggle specific sound suppressions (hurt, armor-equip, consume-sounds, block-place, block-break, block-interact, totem-use).
 - **World Pausing**: Invisibility effect is now paused when traveling to other dimensions (Nether/End) and automatically resumes upon returning to the Overworld.
 - Renamed `attack-reveal` config section to `reveal-window`.
+
+### Fixed
+- Fixed an issue where the **Reveal Window** would trigger when attacking any entity; it now correctly only triggers when attacking another Player.
+- Fixed a major bug where paused effects (from leaving the Overworld) were still granting players invisibility perks like sound suppression, stealth from mobs, and reveal window tracking. Paused players are now treated strictly as vanilla players until they return.
 
 
 ## [1.1.0] - 2026-07-26

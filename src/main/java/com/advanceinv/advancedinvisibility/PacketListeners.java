@@ -109,9 +109,14 @@ public class PacketListeners {
                                 if (!PacketListeners.this.plugin.getEffectManager().hasEffect(invisible)) continue;
                                 if (PacketListeners.this.plugin.getEffectManager().isRevealed(invisible.getUniqueId())) continue;
 
-                                double x = event.getPacket().getIntegers().readSafely(0) / 8.0;
-                                double y = event.getPacket().getIntegers().readSafely(1) / 8.0;
-                                double z = event.getPacket().getIntegers().readSafely(2) / 8.0;
+                                // Since NAMED_SOUND_EFFECT has a specific structure for coordinates,
+                                // we try to read integers 0, 1, 2. If it fails, we ignore it.
+                                double x = 0, y = 0, z = 0;
+                                try {
+                                    x = event.getPacket().getIntegers().readSafely(0) / 8.0;
+                                    y = event.getPacket().getIntegers().readSafely(1) / 8.0;
+                                    z = event.getPacket().getIntegers().readSafely(2) / 8.0;
+                                } catch (Exception ignored) {}
                                 
                                 org.bukkit.Location soundLoc = new org.bukkit.Location(invisible.getWorld(), x, y, z);
                                 if (invisible.getLocation().distanceSquared(soundLoc) < 4.0) { // within ~2 blocks
@@ -157,16 +162,18 @@ public class PacketListeners {
         if (config.isSuppressArmorEquip() && (soundName.contains("ARMOR_EQUIP") || soundName.contains("EQUIP_ARMOR") || soundName.contains("ARMOR.EQUIP"))) return true;
         // Legacy equip keyword for older API versions
         if (config.isSuppressArmorEquip() && (soundName.contains("_EQUIP") || soundName.contains(".EQUIP"))) return true;
-        // Eating: entity.generic.eat → ENTITY_GENERIC_EAT
-        if (config.isSuppressEating() && (soundName.contains("_EAT") || soundName.equals("EAT"))) return true;
-        // Drinking: entity.generic.drink → ENTITY_GENERIC_DRINK
-        if (config.isSuppressDrinking() && (soundName.contains("_DRINK") || soundName.equals("DRINK"))) return true;
-        // Burp: entity.player.burp → ENTITY_PLAYER_BURP
-        if (config.isSuppressBurp() && soundName.contains("BURP")) return true;
-        // Block placing sounds
-        if (config.isSuppressBlockPlace() && (soundName.contains("_PLACE") || soundName.contains(".PLACE"))) return true;
-        // Water bucket sounds
-        if (config.isSuppressWaterBucket() && (soundName.contains("BUCKET_EMPTY") || soundName.contains("BUCKET.EMPTY"))) return true;
+        // Consume sounds (eating, drinking, burping)
+        if (config.isSuppressConsumeSounds() && (
+                soundName.contains("_EAT") || soundName.equals("EAT") ||
+                soundName.contains("_DRINK") || soundName.equals("DRINK") ||
+                soundName.contains("BURP")
+        )) return true;
+        // Placing sounds (blocks and water bucket)
+        if (config.isSuppressBlockPlace() && (soundName.contains("_PLACE") || soundName.contains(".PLACE") || soundName.contains("BUCKET_EMPTY") || soundName.contains("BUCKET.EMPTY"))) return true;
+        // Block break sounds (e.g. block.stone.break → BLOCK_STONE_BREAK)
+        if (config.isSuppressBlockBreak() && (soundName.contains("_BREAK") || soundName.contains(".BREAK"))) return true;
+        // Block interact sounds: container open/close (chest, barrel, shulker, door, trapdoor, etc.)
+        if (config.isSuppressBlockInteract() && (soundName.contains("_OPEN") || soundName.contains(".OPEN") || soundName.contains("_CLOSE") || soundName.contains(".CLOSE"))) return true;
 
         return false;
     }

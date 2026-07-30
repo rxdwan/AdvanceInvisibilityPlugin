@@ -14,11 +14,11 @@ public class ConfigManager {
     
     private boolean suppressHurt;
     private boolean suppressArmorEquip;
-    private boolean suppressEating;
-    private boolean suppressDrinking;
-    private boolean suppressBurp;
+    private boolean suppressConsumeSounds;
     private boolean suppressBlockPlace;
-    private boolean suppressWaterBucket;
+    private boolean suppressBlockBreak;
+    private boolean suppressBlockInteract;
+    private boolean suppressTotemUse;
 
     private String msgAlreadyActive;
     private String msgNotEnoughMoney;
@@ -50,6 +50,10 @@ public class ConfigManager {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
+        
+        // Automatically add any new missing keys from the jar's config.yml into the user's config.yml
+        config.options().copyDefaults(true);
+        plugin.saveConfig();
 
         this.pricePerMinute = config.getDouble("advanced-invisibility.price-per-minute", 500.0);
         this.defaultTime = config.getInt("advanced-invisibility.default-time", 3);
@@ -60,11 +64,11 @@ public class ConfigManager {
         
         this.suppressHurt = config.getBoolean("advanced-invisibility.suppress-sounds.hurt", true);
         this.suppressArmorEquip = config.getBoolean("advanced-invisibility.suppress-sounds.armor-equip", true);
-        this.suppressEating = config.getBoolean("advanced-invisibility.suppress-sounds.eating", true);
-        this.suppressDrinking = config.getBoolean("advanced-invisibility.suppress-sounds.drinking", true);
-        this.suppressBurp = config.getBoolean("advanced-invisibility.suppress-sounds.burp", true);
-        this.suppressBlockPlace = config.getBoolean("advanced-invisibility.suppress-sounds.block-place", false);
-        this.suppressWaterBucket = config.getBoolean("advanced-invisibility.suppress-sounds.water-bucket", false);
+        this.suppressConsumeSounds = config.getBoolean("advanced-invisibility.suppress-sounds.consume-sounds", true);
+        this.suppressBlockPlace = config.getBoolean("advanced-invisibility.suppress-sounds.block-place", true);
+        this.suppressBlockBreak = config.getBoolean("advanced-invisibility.suppress-sounds.block-break", true);
+        this.suppressBlockInteract = config.getBoolean("advanced-invisibility.suppress-sounds.block-interact", false);
+        this.suppressTotemUse = config.getBoolean("advanced-invisibility.suppress-sounds.totem-use", true);
 
         this.bossBarText = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("display.boss-bar-text", "&f&lAdvanced Invisibility &7- {time}"));
         this.bossBarColor = config.getString("display.boss-bar-color", "WHITE").toUpperCase();
@@ -100,11 +104,11 @@ public class ConfigManager {
     
     public boolean isSuppressHurt() { return suppressHurt; }
     public boolean isSuppressArmorEquip() { return suppressArmorEquip; }
-    public boolean isSuppressEating() { return suppressEating; }
-    public boolean isSuppressDrinking() { return suppressDrinking; }
-    public boolean isSuppressBurp() { return suppressBurp; }
+    public boolean isSuppressConsumeSounds() { return suppressConsumeSounds; }
     public boolean isSuppressBlockPlace() { return suppressBlockPlace; }
-    public boolean isSuppressWaterBucket() { return suppressWaterBucket; }
+    public boolean isSuppressBlockBreak() { return suppressBlockBreak; }
+    public boolean isSuppressBlockInteract() { return suppressBlockInteract; }
+    public boolean isSuppressTotemUse() { return suppressTotemUse; }
 
     public String getMsgAlreadyActive() { return msgAlreadyActive; }
     public String getMsgNotEnoughMoney() { return msgNotEnoughMoney; }

@@ -49,7 +49,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 player.sendMessage("§cYou can only use this in the overworld.");
                 return true;
             }
-            if (plugin.getEffectManager().hasEffect(player)) {
+            if (plugin.getEffectManager().hasActiveOrPausedEffect(player)) {
                 player.sendMessage(plugin.getConfigManager().getMsgAlreadyActive());
                 return true;
             }
@@ -101,7 +101,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             }
 
             if (args[1].equalsIgnoreCase("remove")) {
-                if (plugin.getEffectManager().hasEffect(target)) {
+                if (plugin.getEffectManager().hasActiveOrPausedEffect(target)) {
                     plugin.getEffectManager().removeEffect(target, false);
                     sender.sendMessage(plugin.getConfigManager().getMsgAdminRemoved().replace("{player}", target.getName()));
                 } else {

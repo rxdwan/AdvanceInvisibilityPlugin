@@ -43,6 +43,10 @@ public class EffectManager {
     }
 
     public boolean hasEffect(Player player) {
+        return activeEffects.containsKey(player.getUniqueId());
+    }
+
+    public boolean hasActiveOrPausedEffect(Player player) {
         return activeEffects.containsKey(player.getUniqueId()) || pausedEffects.containsKey(player.getUniqueId());
     }
 
@@ -138,6 +142,10 @@ public class EffectManager {
         EffectTask task = activeEffects.get(player.getUniqueId());
         if (task != null) {
             return new int[]{task.getRemainingTicks(), task.getOriginalTicks()};
+        }
+        PausedData pData = pausedEffects.get(player.getUniqueId());
+        if (pData != null) {
+            return new int[]{pData.remainingTicks, pData.originalTicks};
         }
         return null;
     }

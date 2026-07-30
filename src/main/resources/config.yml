@@ -13,11 +13,11 @@ advanced-invisibility:
   suppress-sounds:
     hurt: true
     armor-equip: true
-    eating: true
-    drinking: true
-    burp: true
+    consume-sounds: true
     block-place: false
-    water-bucket: false
+    block-break: false        # Breaking blocks (e.g. block.stone.break)
+    block-interact: false    # Container/door sounds (chest open/close, barrel, shulker, doors)
+    totem-use: false
 
 display:
   boss-bar-text: "&f&lAdvanced Invisibility &7- {time}"
