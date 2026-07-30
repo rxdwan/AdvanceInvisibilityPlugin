@@ -17,6 +17,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 import org.bukkit.entity.Mob;
@@ -70,6 +71,22 @@ public class EventListeners implements Listener {
     }
 
     @EventHandler
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+        if (player.getWorld().getEnvironment() != org.bukkit.World.Environment.NORMAL) {
+            if (plugin.getEffectManager().hasEffect(player) && !plugin.getEffectManager().isPaused(player)) {
+                plugin.getEffectManager().pauseInvisibility(player);
+                player.sendMessage(plugin.getConfigManager().getMsgPaused());
+            }
+        } else {
+            if (plugin.getEffectManager().isPaused(player)) {
+                plugin.getEffectManager().resumeInvisibility(player);
+                player.sendMessage(plugin.getConfigManager().getMsgResumed());
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
         if (event.getItem().getType() == Material.MILK_BUCKET) {
             if (plugin.getEffectManager().hasEffect(event.getPlayer())) {
@@ -112,10 +129,12 @@ public class EventListeners implements Listener {
             if (plugin.getEffectManager().hasEffect(player)) {
                 plugin.getEffectManager().setStealthBroken(player);
                 
-                if (plugin.getConfigManager().isAttackRevealEnabled()) {
-                    plugin.getEffectManager().enterRevealWindow(player);
+                if (plugin.getConfigManager().isRevealWindowEnabled()) {
+                    if (plugin.getEffectManager().hasEffect(player)) {
+                        plugin.getEffectManager().enterRevealWindow(player);
+                    }
                     // Small subtitle-only text — doesn't clash with action bar timer or milestone titles
-                    int dur = plugin.getConfigManager().getAttackRevealDuration();
+                    int dur = plugin.getConfigManager().getRevealWindowDuration();
                     player.sendTitle("", "§c· Stealth disrupted for §f" + dur + "s", 2, 50, 10);
                 }
             }

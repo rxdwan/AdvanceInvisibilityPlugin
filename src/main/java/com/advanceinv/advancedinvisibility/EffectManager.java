@@ -31,6 +31,7 @@ public class EffectManager {
 
     private final AdvancedInvisibilityPlugin plugin;
     private final Map<UUID, EffectTask> activeEffects = new ConcurrentHashMap<>();
+    private final Map<UUID, PausedData> pausedEffects = new ConcurrentHashMap<>();
     private final Set<UUID> stealthBrokenPlayers = new HashSet<>();
     private final Map<UUID, Set<UUID>> aggroedMobs = new ConcurrentHashMap<>(); // player UUID -> set of mob entity UUIDs
     
@@ -42,7 +43,51 @@ public class EffectManager {
     }
 
     public boolean hasEffect(Player player) {
-        return activeEffects.containsKey(player.getUniqueId());
+        return activeEffects.containsKey(player.getUniqueId()) || pausedEffects.containsKey(player.getUniqueId());
+    }
+
+    public boolean isPaused(Player player) {
+        return pausedEffects.containsKey(player.getUniqueId());
+    }
+
+    public static class PausedData {
+        public final int remainingTicks;
+        public final int originalTicks;
+        public PausedData(int remainingTicks, int originalTicks) {
+            this.remainingTicks = remainingTicks;
+            this.originalTicks = originalTicks;
+        }
+    }
+
+    public void pauseInvisibility(Player player) {
+        UUID uuid = player.getUniqueId();
+        EffectTask task = activeEffects.remove(uuid);
+        if (task == null) return;
+        
+        pausedEffects.put(uuid, new PausedData(task.getRemainingTicks(), task.getOriginalTicks()));
+        task.cleanup();
+        task.cancel();
+        
+        BukkitTask revealTask = revealTasks.remove(uuid);
+        if (revealTask != null) revealTask.cancel();
+        revealedPlayers.remove(uuid);
+        
+        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        player.sendActionBar("");
+        
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!onlinePlayer.equals(player)) {
+                onlinePlayer.showPlayer(plugin, player);
+            }
+        }
+    }
+
+    public void resumeInvisibility(Player player) {
+        UUID uuid = player.getUniqueId();
+        PausedData data = pausedEffects.remove(uuid);
+        if (data == null) return;
+        
+        applyEffect(player, data.remainingTicks, data.originalTicks);
     }
 
     public boolean isStealthBroken(Player player) {
@@ -161,6 +206,7 @@ public class EffectManager {
             task.cleanup();
             task.cancel();
         }
+        pausedEffects.remove(player.getUniqueId());
         
         // Cancel any active reveal task
         BukkitTask revealTask = revealTasks.remove(player.getUniqueId());
@@ -201,7 +247,14 @@ public class EffectManager {
                 removeEffect(player, false);
             }
         }
+        for (UUID uuid : pausedEffects.keySet()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && player.isOnline()) {
+                removeEffect(player, false);
+            }
+        }
         activeEffects.clear();
+        pausedEffects.clear();
         stealthBrokenPlayers.clear();
         revealedPlayers.clear();
         for (BukkitTask task : revealTasks.values()) {
@@ -370,7 +423,7 @@ public class EffectManager {
             }
         }
 
-        int durationSeconds = plugin.getConfigManager().getAttackRevealDuration();
+        int durationSeconds = plugin.getConfigManager().getRevealWindowDuration();
         
         BukkitTask newTask = new BukkitRunnable() {
             @Override

@@ -6,9 +6,18 @@ advanced-invisibility:
   display-type: BOSS_BAR  # Options: NONE, BOSS_BAR, ACTION_BAR
   disable-mob-detection: true # Mobs ignore invisible players
 
-  attack-reveal:
+  reveal-window:
     enabled: true                # Toggle this feature on/off entirely
     duration: 3                  # Seconds the player remains in vanilla-visible state after attacking
+
+  suppress-sounds:
+    hurt: true
+    armor-equip: true
+    eating: true
+    drinking: true
+    burp: true
+    block-place: false
+    water-bucket: false
 
 display:
   boss-bar-text: "&f&lAdvanced Invisibility &7- {time}"
@@ -21,9 +30,11 @@ messages:
   not-enough-money: "§cYou don't have enough money. This effect costs $§e{price}§c."
   activated: "§aAdvanced Invisibility activated for §e{time} minute(s)§a for $§e{price}§a."
   admin-gave: "§aGave §e{player}§a advance invisibility for §e{time} minute(s)§a."
-  admin-removed: "§aRemoved advance invisibility from §e{player}§a."
-  removed: "§eYour invisibility effect has been removed."
-  no-permission: "§cYou don't have permission to use this command."
+  admin-removed: "&aRemoved advance invisibility from &e{player}&a."
+  removed: "&eYour invisibility effect has been removed."
+  no-permission: "&cYou don't have permission to use this command."
+  paused: "&eYour invisibility effect has been paused because you left the overworld."
+  resumed: "&aYour invisibility effect has resumed!"
 
 # Title warning notifications fired at specific remaining-time milestones
 warnings:

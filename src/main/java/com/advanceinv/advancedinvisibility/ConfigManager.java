@@ -9,8 +9,17 @@ public class ConfigManager {
     private int defaultTime;
     private String displayType;
     private boolean disableMobDetection;
-    private boolean attackRevealEnabled;
-    private int attackRevealDuration;
+    private boolean revealWindowEnabled;
+    private int revealWindowDuration;
+    
+    private boolean suppressHurt;
+    private boolean suppressArmorEquip;
+    private boolean suppressEating;
+    private boolean suppressDrinking;
+    private boolean suppressBurp;
+    private boolean suppressBlockPlace;
+    private boolean suppressWaterBucket;
+
     private String msgAlreadyActive;
     private String msgNotEnoughMoney;
     private String msgActivated;
@@ -18,6 +27,8 @@ public class ConfigManager {
     private String msgAdminRemoved;
     private String msgRemoved;
     private String msgNoPermission;
+    private String msgPaused;
+    private String msgResumed;
     private List<Integer> warningThresholds;
     private boolean showExpiredTitle;
     private String warningExpiredTitle;
@@ -44,8 +55,16 @@ public class ConfigManager {
         this.defaultTime = config.getInt("advanced-invisibility.default-time", 3);
         this.displayType = config.getString("advanced-invisibility.display-type", "BOSS_BAR").toUpperCase();
         this.disableMobDetection = config.getBoolean("advanced-invisibility.disable-mob-detection", true);
-        this.attackRevealEnabled = config.getBoolean("advanced-invisibility.attack-reveal.enabled", true);
-        this.attackRevealDuration = config.getInt("advanced-invisibility.attack-reveal.duration", 3);
+        this.revealWindowEnabled = config.getBoolean("advanced-invisibility.reveal-window.enabled", true);
+        this.revealWindowDuration = config.getInt("advanced-invisibility.reveal-window.duration", 3);
+        
+        this.suppressHurt = config.getBoolean("advanced-invisibility.suppress-sounds.hurt", true);
+        this.suppressArmorEquip = config.getBoolean("advanced-invisibility.suppress-sounds.armor-equip", true);
+        this.suppressEating = config.getBoolean("advanced-invisibility.suppress-sounds.eating", true);
+        this.suppressDrinking = config.getBoolean("advanced-invisibility.suppress-sounds.drinking", true);
+        this.suppressBurp = config.getBoolean("advanced-invisibility.suppress-sounds.burp", true);
+        this.suppressBlockPlace = config.getBoolean("advanced-invisibility.suppress-sounds.block-place", false);
+        this.suppressWaterBucket = config.getBoolean("advanced-invisibility.suppress-sounds.water-bucket", false);
 
         this.bossBarText = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("display.boss-bar-text", "&f&lAdvanced Invisibility &7- {time}"));
         this.bossBarColor = config.getString("display.boss-bar-color", "WHITE").toUpperCase();
@@ -54,11 +73,13 @@ public class ConfigManager {
 
         this.msgAlreadyActive = config.getString("messages.already-active", "§cYou already have the Advanced Invisibility effect active.");
         this.msgNotEnoughMoney = config.getString("messages.not-enough-money", "§cYou don't have enough money. This effect costs $§e{price}§c.");
-        this.msgActivated = config.getString("messages.activated", "§aAdvanced Invisibility activated for §e{time} minute(s)§a for $§e{price}§a.");
-        this.msgAdminGave = config.getString("messages.admin-gave", "§aGave §e{player}§a advance invisibility for §e{time} minute(s)§a.");
-        this.msgAdminRemoved = config.getString("messages.admin-removed", "§aRemoved advance invisibility from §e{player}§a.");
-        this.msgRemoved = config.getString("messages.removed", "§eYour invisibility effect has been removed.");
-        this.msgNoPermission = config.getString("messages.no-permission", "§cYou don't have permission to use this command.");
+        this.msgActivated = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.activated", "&aAdvanced Invisibility activated for &e{time} minute(s)&a for $&e{price}&a."));
+        this.msgAdminGave = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.admin-gave", "&aGave &e{player}&a advance invisibility for &e{time} minute(s)&a."));
+        this.msgAdminRemoved = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.admin-removed", "&aRemoved advance invisibility from &e{player}&a."));
+        this.msgRemoved = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.removed", "&eYour invisibility effect has been removed."));
+        this.msgNoPermission = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.no-permission", "&cYou don't have permission to use this command."));
+        this.msgPaused = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.paused", "&eYour invisibility effect has been paused because you left the overworld."));
+        this.msgResumed = org.bukkit.ChatColor.translateAlternateColorCodes('&', config.getString("messages.resumed", "&aYour invisibility effect has resumed!"));
 
         this.warningThresholds = config.getIntegerList("warnings.thresholds");
         if (this.warningThresholds.isEmpty()) this.warningThresholds = List.of(60, 30, 10);
@@ -74,8 +95,17 @@ public class ConfigManager {
     public int getDefaultTime() { return defaultTime; }
     public String getDisplayType() { return displayType; }
     public boolean isDisableMobDetection() { return disableMobDetection; }
-    public boolean isAttackRevealEnabled() { return attackRevealEnabled; }
-    public int getAttackRevealDuration() { return attackRevealDuration; }
+    public boolean isRevealWindowEnabled() { return revealWindowEnabled; }
+    public int getRevealWindowDuration() { return revealWindowDuration; }
+    
+    public boolean isSuppressHurt() { return suppressHurt; }
+    public boolean isSuppressArmorEquip() { return suppressArmorEquip; }
+    public boolean isSuppressEating() { return suppressEating; }
+    public boolean isSuppressDrinking() { return suppressDrinking; }
+    public boolean isSuppressBurp() { return suppressBurp; }
+    public boolean isSuppressBlockPlace() { return suppressBlockPlace; }
+    public boolean isSuppressWaterBucket() { return suppressWaterBucket; }
+
     public String getMsgAlreadyActive() { return msgAlreadyActive; }
     public String getMsgNotEnoughMoney() { return msgNotEnoughMoney; }
     public String getMsgActivated() { return msgActivated; }
@@ -83,6 +113,8 @@ public class ConfigManager {
     public String getMsgAdminRemoved() { return msgAdminRemoved; }
     public String getMsgRemoved() { return msgRemoved; }
     public String getMsgNoPermission() { return msgNoPermission; }
+    public String getMsgPaused() { return msgPaused; }
+    public String getMsgResumed() { return msgResumed; }
     public List<Integer> getWarningThresholds() { return warningThresholds; }
     public boolean isShowExpiredTitle() { return showExpiredTitle; }
     public String getWarningExpiredTitle() { return warningExpiredTitle; }

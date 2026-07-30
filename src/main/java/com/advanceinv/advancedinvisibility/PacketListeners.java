@@ -147,20 +147,27 @@ public class PacketListeners {
      *   item.armor.equip_iron → ITEM_ARMOR_EQUIP_IRON
      */
     private boolean shouldSuppressSound(String soundName) {
+        ConfigManager config = plugin.getConfigManager();
+
         // Hurt / damage sounds
-        if (soundName.contains("HURT") || soundName.contains("DAMAGE")) return true;
+        if (config.isSuppressHurt() && (soundName.contains("HURT") || soundName.contains("DAMAGE"))) return true;
         // Armor equip sounds
         // Bukkit enum uses underscores: ITEM_ARMOR_EQUIP_DIAMOND
         // NMS raw string uses dots: minecraft:item.armor.equip_diamond
-        if (soundName.contains("ARMOR_EQUIP") || soundName.contains("EQUIP_ARMOR") || soundName.contains("ARMOR.EQUIP")) return true;
+        if (config.isSuppressArmorEquip() && (soundName.contains("ARMOR_EQUIP") || soundName.contains("EQUIP_ARMOR") || soundName.contains("ARMOR.EQUIP"))) return true;
         // Legacy equip keyword for older API versions
-        if (soundName.contains("_EQUIP") || soundName.contains(".EQUIP")) return true;
+        if (config.isSuppressArmorEquip() && (soundName.contains("_EQUIP") || soundName.contains(".EQUIP"))) return true;
         // Eating: entity.generic.eat → ENTITY_GENERIC_EAT
-        if (soundName.contains("_EAT") || soundName.equals("EAT")) return true;
+        if (config.isSuppressEating() && (soundName.contains("_EAT") || soundName.equals("EAT"))) return true;
         // Drinking: entity.generic.drink → ENTITY_GENERIC_DRINK
-        if (soundName.contains("_DRINK") || soundName.equals("DRINK")) return true;
+        if (config.isSuppressDrinking() && (soundName.contains("_DRINK") || soundName.equals("DRINK"))) return true;
         // Burp: entity.player.burp → ENTITY_PLAYER_BURP
-        if (soundName.contains("BURP")) return true;
+        if (config.isSuppressBurp() && soundName.contains("BURP")) return true;
+        // Block placing sounds
+        if (config.isSuppressBlockPlace() && (soundName.contains("_PLACE") || soundName.contains(".PLACE"))) return true;
+        // Water bucket sounds
+        if (config.isSuppressWaterBucket() && (soundName.contains("BUCKET_EMPTY") || soundName.contains("BUCKET.EMPTY"))) return true;
+
         return false;
     }
 }

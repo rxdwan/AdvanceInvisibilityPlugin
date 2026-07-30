@@ -16,7 +16,9 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 - **Effect persistence** — If an invisible player disconnects, their remaining time and boss bar progress are saved to disk. When they rejoin, the effect resumes from exactly where it left off.
 - **Mob stealth system** — Mobs completely ignore invisible players. If a player attacks a mob, their stealth is broken and mobs will aggro them. Drinking an **Awkward Potion** fully restores stealth, including dropping existing mob aggro.
 - **Configurable display** — Choose between `BOSS_BAR`, `ACTION_BAR`, or `NONE` for the timer UI. Dynamically reloads mid-effect via `/advanceinv reload`.
-- **Sound suppression** — Suppresses armour equip sounds, hurt sounds, eating/drinking sounds comming from invisible players.
+- **Reveal Window** — Hitting a player or mob while invisible will temporarily reveal you for a configurable amount of time (`reveal-window`).
+- **World Pausing** — Invisibility effect automatically pauses when you change dimensions (e.g. going to the Nether) and resumes when you return to the Overworld.
+- **Configurable Sound Suppression** — Suppresses sounds coming from invisible players, such as hurting, armor equipping, eating, drinking, and burping, with toggles for block placing and water buckets.
 
 ## Requirements
 
@@ -31,7 +33,7 @@ A feature-rich Minecraft plugin for **Paper 1.21+** that grants players true, se
 
 ## Installation
 
-1. Drop `AdvancedInvisibility-1.0.0.jar` into your server's `plugins/` folder.
+1. Drop `AdvancedInvisibility-1.2.0.jar` into your server's `plugins/` folder.
 2. Install **ProtocolLib** and **Vault** (plus an economy plugin).
 3. Restart your server.
 4. Edit `plugins/AdvancedInvisibility/config.yml` to your liking.
@@ -45,19 +47,34 @@ advanced-invisibility:
   display-type: BOSS_BAR     # Timer UI: NONE | BOSS_BAR | ACTION_BAR
   disable-mob-detection: true # If true, mobs ignore invisible players.
 
+  reveal-window:
+    enabled: true                # Temporarily reveal the player when they attack
+    duration: 3                  # Seconds the player remains visible
+
+  suppress-sounds:
+    hurt: true
+    armor-equip: true
+    eating: true
+    drinking: true
+    burp: true
+    block-place: false
+    water-bucket: false
+
 messages:
-  already-active: "§cYou already have the Advanced Invisibility effect active."
-  not-enough-money: "§cYou don't have enough money. This effect costs $§e{price}§c."
-  activated: "§aAdvanced Invisibility activated for §e{time} minute(s)§a for $§e{price}§a."
-  admin-gave: "§aGave §e{player}§a advance invisibility for §e{time} minute(s)§a."
-  admin-removed: "§aRemoved advance invisibility from §e{player}§a."
-  removed: "§eYour invisibility effect has been removed."
-  no-permission: "§cYou don't have permission to use this command."
+  already-active: "&cYou already have the Advanced Invisibility effect active."
+  not-enough-money: "&cYou don't have enough money. This effect costs $&e{price}&c."
+  activated: "&aAdvanced Invisibility activated for &e{time} minute(s)&a for $&e{price}&a."
+  admin-gave: "&aGave &e{player}&a advance invisibility for &e{time} minute(s)&a."
+  admin-removed: "&aRemoved advance invisibility from &e{player}&a."
+  removed: "&eYour invisibility effect has been removed."
+  no-permission: "&cYou don't have permission to use this command."
+  paused: "&eYour invisibility effect has been paused because you left the overworld."
+  resumed: "&aYour invisibility effect has resumed!"
 
 warnings:
   thresholds: [60, 30, 10]   # Seconds remaining when a title warning fires
-  expired-title: "§4Invisibility Lost"  # Title shown when the effect expires
-  subtitle: "§7{time}s remaining"       # Subtitle shown at each warning. {time} = seconds left
+  expired-title: "&4Invisibility Lost"  # Title shown when the effect expires
+  subtitle: "&7{time}s remaining"       # Subtitle shown at each warning. {time} = seconds left
   fade-in: 5    # Ticks to fade in
   stay: 60      # Ticks to stay on screen
   fade-out: 10  # Ticks to fade out
@@ -90,9 +107,10 @@ warnings:
 
 1. Player buys the effect — they become completely invisible to others.
 2. Mobs will not detect or target the player (if `disable-mob-detection: true`).
-3. If the player attacks a mob or player — their stealth is broken. Mobs begin targeting them normally.
+3. If the player attacks a mob or player — their stealth is broken, and they are revealed for a configurable number of seconds (`reveal-window.duration`).
 4. Drinking an **Awkward Potion** — stealth is fully restored. Every mob that ever aggroed the player has their target dropped, regardless of distance.
-5. Effect expires, player dies, or drinks milk — full cleanup.
+5. Effect is paused if the player travels to another dimension, and resumes when they return to the Overworld.
+6. Effect expires, player dies, or drinks milk — full cleanup.
 
 ## Screenshots
 
@@ -133,7 +151,7 @@ cd AdvanceInvisibilityPlugin
 mvnd clean package
 ```
 
-The compiled JAR will be in `target/AdvancedInvisibility-1.1.0.jar`.
+The compiled JAR will be in `target/AdvancedInvisibility-1.2.0.jar`.
 
 ## License
 
